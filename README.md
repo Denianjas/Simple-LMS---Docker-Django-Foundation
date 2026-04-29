@@ -32,3 +32,4 @@ Berikut adalah langkah-langkah untuk melakukan instalasi dan menjalankan project
 ![Django Welcome Page](images/DJANGO.png)
 
 
+p
