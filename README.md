@@ -32,4 +32,12 @@ Berikut adalah langkah-langkah untuk melakukan instalasi dan menjalankan project
 ![Django Welcome Page](images/DJANGO.png)
 
 
-p
+## Progress 2: Simple LMS - Database Design & ORM Implementation
+
+##  Screenshot Query N+1
+
+![Django Query N+1](images/(N+1).png)
+
+##  Screenshot Django ADMIN page
+
+![Django ADMIN PAGE](images/ADMIN.png)
