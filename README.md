@@ -41,3 +41,14 @@ Berikut adalah langkah-langkah untuk melakukan instalasi dan menjalankan project
 ##  Screenshot Django ADMIN page
 
 ![Django ADMIN PAGE](images/ADMIN.png)
+
+
+## Progress 3: REST API Implementation with Django Ninja and JWT
+
+## screenshot API-DOC
+
+![Django API-DOC](images/API-DOC.png)
+
+## Screenshot POSTMAN
+
+![Django POSTMAN](images/POSTMAN.png)

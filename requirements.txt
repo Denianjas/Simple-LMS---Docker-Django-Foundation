@@ -1,2 +1,5 @@
 Django>=4.2,<5.0
 psycopg2-binary>=2.9
+django-ninja
+django-ninja-extra
+django-ninja-jwt
