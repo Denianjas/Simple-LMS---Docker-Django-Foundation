@@ -3,3 +3,6 @@ psycopg2-binary>=2.9
 django-ninja
 django-ninja-extra
 django-ninja-jwt
+celery>=5.3.6
+redis>=5.0.1
+pymongo>=4.6.1

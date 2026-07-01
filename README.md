@@ -52,3 +52,30 @@ Berikut adalah langkah-langkah untuk melakukan instalasi dan menjalankan project
 ## Screenshot POSTMAN
 
 ![Django POSTMAN](images/POSTMAN.png)
+
+# Progress 4: Simple LMS - Redis, Celery & Monitoring
+Penjelasan Environment Variables (.env)
+Proyek ini membutuhkan konfigurasi environment variables tambahan untuk Redis, RabbitMQ, dan MongoDB. Berikut adalah penjelasan untuk variabel baru tersebut:
+
+REDIS_URL : Alamat koneksi ke Redis untuk keperluan caching (biasanya redis://redis:6379/1).
+
+CELERY_BROKER_URL : URL message broker yang digunakan oleh Celery, yaitu RabbitMQ (amqp://guest:guest@rabbitmq:5672/).
+
+MONGO_URI : String koneksi untuk menyimpan activity logs ke database MongoDB.
+
+## Arsitektur Sistem
+![DJANGO mermaid](images/mermaid.png)
+
+## Caching Strategy
+Sistem menggunakan pola Cache-Aside. Data yang diminta dari database akan disimpan ke Redis dengan TTL (Time-To-Live) selama 300 detik. Ini memastikan performa API tetap cepat dan mengurangi beban database pada request berulang.
+
+## Task Flow
+Proses berat seperti export report dijalankan secara asynchronous menggunakan Celery. API mengirim pesan tugas ke RabbitMQ, yang kemudian diproses oleh Celery Worker. Hal ini mencegah pemblokiran pada main thread API dan meningkatkan skalabilitas sistem.
+
+## flowers
+
+![DJANGO flowers](images/flowers.png)
+
+## redis
+
+![DJANGO redis](images/redis.png)

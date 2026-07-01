@@ -1,3 +1,4 @@
+from .tasks import send_enrollment_email, export_course_report
 from typing import List
 from django.contrib.auth.hashers import make_password
 from ninja.pagination import paginate
@@ -5,6 +6,8 @@ from ninja_extra import NinjaExtraAPI, api_controller, http_get, http_post, http
 from ninja_jwt.controller import NinjaJWTDefaultController
 from ninja_jwt.authentication import JWTAuth
 from .models import User, Course, Category, Enrollment, Progress
+from .utils import redis_cache_page, rate_limiter, log_activity
+from .utils import log_activity
 from .schemas import (
     UserOut, RegisterIn, UpdateProfileIn, Message,
     CourseOut, CourseCreateIn, EnrollmentOut, ProgressOut, ProgressUpdateIn
@@ -32,6 +35,16 @@ class AuthController:
             password=make_password(data.password),
             role=data.role
         )
+        
+        # === PRE-PASTE / SELIPKAN KODE INI DI SINI ===
+        log_activity(
+            user_id=user.id, 
+            username=user.username, 
+            action="REGISTER", 
+            details=f"User terdaftar dengan role {user.role}"
+        )
+        # =============================================
+        
         return 201, user
 
     @http_get('/me', auth=JWTAuth(), response=UserOut)
@@ -49,12 +62,34 @@ class AuthController:
 
 @api_controller('/courses', tags=['Courses'])
 class CourseController:
+
+    @http_post('/export-report', auth=JWTAuth(), response={202: Message})
+    def trigger_export(self, request):
+        if not is_role(request.user, 'admin'):
+            return 403, {"message": "Hanya Admin yang boleh mencetak laporan"}
+            
+        # Pemicu task async untuk cetak CSV
+        export_course_report.delay("laporan_terbaru_lms.csv")
+        
+        return 202, {"message": "Proses ekspor laporan sedang berjalan di latar belakang (Async)"}
     
     @http_get('/', response=List[CourseOut])
     @paginate
+    @rate_limiter(requests_limit=60)  # <-- TAMBAHKAN INI (Rate Limiting)
+    @redis_cache_page(timeout=300)    # <-- TAMBAHKAN INI (Cache List)
     def list_courses(self, request):
-       
         return Course.objects.for_listing()
+
+    # --- TAMBAHKAN ENDPOINT DETAIL COURSE INI ---
+    @http_get('/{course_id}', response=CourseOut)
+    @rate_limiter(requests_limit=60)  # <-- TAMBAHKAN INI (Rate Limiting)
+    @redis_cache_page(timeout=300)    # <-- TAMBAHKAN INI (Cache Detail)
+    def course_detail(self, request, course_id: int):
+        try:
+            return Course.objects.get(id=course_id)
+        except Course.DoesNotExist:
+            return 404, {"message": "Course tidak ditemukan"}
+    # --------------------------------------------
 
     @http_post('/', auth=JWTAuth(), response={201: CourseOut, 403: Message})
     def create_course(self, request, data: CourseCreateIn):
@@ -91,6 +126,19 @@ class EnrollmentController:
             student=request.user, 
             course=course
         )
+        
+        # LOGGING MONGODB YANG SUDAH KITA BUAT SEBELUMNYA
+        log_activity(
+            user_id=request.user.id, 
+            username=request.user.username, 
+            action="ENROLL_COURSE", 
+            details=f"Mendaftar ke course: {course.title}"
+        )
+        
+        # === TAMBAHKAN/SELIPKAN BARIS INI DI SINI ===
+        send_enrollment_email.delay(request.user.id, course.title)
+        # ============================================
+        
         return 201, enrollment
 
     @http_get('/my-courses', response=List[EnrollmentOut])

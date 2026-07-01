@@ -131,3 +131,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+import os
+
+# Konfigurasi Caching menggunakan Redis di Docker
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ.get("REDIS_URL", "redis://redis:6379/0"),
+    }
+}
