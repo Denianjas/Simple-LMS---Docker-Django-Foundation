@@ -44,6 +44,16 @@ INSTALLED_APPS = [
   
 AUTH_USER_MODEL = 'lms_app.User'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -141,3 +151,20 @@ CACHES = {
         "LOCATION": os.environ.get("REDIS_URL", "redis://redis:6379/0"),
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ==========================================
+# Konfigurasi Celery (RabbitMQ + Redis)
+# ==========================================
+# Broker pakai RabbitMQ (sesuai docker-compose)
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "amqp://guest:guest@rabbitmq:5672//")
+
+# Result Backend pakai Redis (untuk menyimpan status SUCCESS/PENDING)
+CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://redis:6379/0")
+
+# Format data standar Celery
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE

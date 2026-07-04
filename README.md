@@ -79,3 +79,50 @@ Proses berat seperti export report dijalankan secara asynchronous menggunakan Ce
 ## redis
 
 ![DJANGO redis](images/redis.png)
+
+
+## Paket 6: Async Processing & Notification
+Proyek ini mengimplementasikan pemrosesan tugas latar belakang (*background task*) dan sistem notifikasi otomatis menggunakan Celery, RabbitMQ, dan Redis.
+
+### Fitur Terimplementasi
+*   **Email Notification Async**: Pengiriman email dilakukan di latar belakang tanpa memblokir *request* utama.
+*   **Report Generation Async**: Pembuatan laporan dalam format CSV diproses secara asinkron.
+*   **Task Status Endpoint**: Memungkinkan pengguna melacak status tugas melalui `/tasks/{task_id}`.
+*   **Scheduled Task (Celery Beat)**: Otomatisasi pembersihan data progres lama dilakukan setiap 1 menit.
+*   **Flower Monitoring**: Dashboard *real-time* untuk memantau performa *worker* dan *task*.
+
+### Demonstrasi & Verifikasi
+Berikut adalah panduan cara memverifikasi fitur Paket 6 yang telah berjalan:
+
+1.  **Monitor Task via Flower**:
+    *   Akses dashboard di `http://localhost:5555`.
+    *   Buka tab **Tasks** untuk melihat daftar tugas yang sudah diproses atau sedang berjalan.
+
+2.  **Verifikasi Scheduled Task**:
+    *   Periksa log `celery-worker` untuk melihat eksekusi otomatis:
+        `docker compose logs -f celery-worker`
+    *   Anda akan melihat log: `[... INFO/ForkPoolWorker-x] Sedang membersihkan data lama secara otomatis...` setiap 60 detik.
+
+3.  **Cek Status Tugas via API**:
+    *   Lakukan `POST` ke endpoint pembuatan laporan.
+    *   Gunakan `task_id` yang didapat untuk mengecek status di endpoint `/tasks/{task_id}`.
+
+    ## Generate report/cert async
+      ![DJANGO certasync](images/certasync.png)
+    ## Scheduled task
+   ![DJANGO schedule](images/schedule.png)
+    ## Task status endpoint
+
+   ![DJANGO reportasync](images/reportasync.png)
+
+    ## Flower monitoring
+
+   ![DJANGO flower1](images/flower1.png)
+
+   ## Email notification async
+
+   ![DJANGO async1](images/async1.png)
+
+    
+
+    

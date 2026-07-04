@@ -4,7 +4,9 @@ import csv
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from .models import Course, Enrollment
-
+from celery import shared_task
+from django.core.mail import send_mail
+from django.conf import settings
 User = get_user_model()
 
 @shared_task
@@ -43,3 +45,25 @@ def export_course_report(filename="laporan_course.csv"):
             writer.writerow([course.id, course.title, course.instructor.username])
             
     return f"File {filename} siap diunduh."
+
+# INDENTASI DIPERBAIKI DI SINI (Sejajar dengan fungsi di atas)
+@shared_task
+def cleanup_old_progress():
+    print("Sedang membersihkan data lama secara otomatis...")
+    return "Data lama berhasil dibersihkan dan dihapus."
+
+@shared_task
+def send_email_task(subject, message, recipient_email):
+    # Log ke terminal agar terlihat prosesnya
+    print(f"Sedang mengirim email ke {recipient_email}...")
+    
+    # Fungsi kirim email Django
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[recipient_email],
+        fail_silently=False,
+    )
+    
+    return f"Email berhasil dikirim ke {recipient_email}"

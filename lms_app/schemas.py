@@ -1,5 +1,6 @@
 from ninja import Schema
 from typing import Optional, List
+from datetime import datetime
 
 # 1. User & Auth Schemas
 class UserOut(Schema):
@@ -13,6 +14,10 @@ class RegisterIn(Schema):
     password: str
     email: str
     role: str # student, instructor, atau admin
+
+class LoginSchema(Schema):
+    username: str
+    password: str
 
 class UpdateProfileIn(Schema):
     first_name: Optional[str] = None
@@ -55,7 +60,7 @@ class CourseCreateIn(Schema):
 class EnrollmentOut(Schema):
     id: int
     course: CourseOut
-    enrolled_at: str
+    enrolled_at: datetime
 
 # 5. Progress Schemas
 class ProgressOut(Schema):

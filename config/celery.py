@@ -11,3 +11,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Otomatis mencari file tasks.py di semua app terdaftar
 app.autodiscover_tasks()
+
+app.conf.beat_schedule = {
+    'cek-tiap-menit': {
+        'task': 'lms_app.tasks.cleanup_old_progress',
+        'schedule': 60.0,
+    },
+}
