@@ -1,3 +1,18 @@
+# AKUN DEMO
+
+ADMIN
+user : Admin123
+pass : admin123
+
+Istructor
+user : dosen_web
+pass : rahasia123
+
+studen
+user : eko
+pass : eko123
+
+
 # Progress 1: Simple LMS - Docker & Django Setup
 
 ## Penjelasan Environment Variables (.env)

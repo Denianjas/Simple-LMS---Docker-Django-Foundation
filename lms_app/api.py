@@ -150,7 +150,7 @@ from .tasks import send_email_task
 
 def trigger_email_notification(email_tujuan):
     # Panggil dengan .delay() agar jadi ASYNC
-    send_email_task.delay(
+    send_email_task.delay( 
         "Selamat Datang di LMS", 
         "Terima kasih telah bergabung!", 
         email_tujuan

@@ -57,7 +57,7 @@ class CourseCreateIn(Schema):
     category_id: int
 
 # 4. Enrollment Schemas
-class EnrollmentOut(Schema):
+class EnrollmentOut(Schema): 
     id: int
     course: CourseOut
     enrolled_at: datetime

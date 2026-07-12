@@ -46,7 +46,7 @@ def export_course_report(filename="laporan_course.csv"):
             
     return f"File {filename} siap diunduh."
 
-# INDENTASI DIPERBAIKI DI SINI (Sejajar dengan fungsi di atas)
+
 @shared_task
 def cleanup_old_progress():
     print("Sedang membersihkan data lama secara otomatis...")

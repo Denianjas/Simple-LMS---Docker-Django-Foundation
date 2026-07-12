@@ -18,7 +18,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
 
-    def __str__(self):
+    def __str__(self): 
         return self.name
 
 # Custom Manager untuk Course
@@ -52,7 +52,7 @@ class Lesson(models.Model):
 
 # Custom Manager untuk Enrollment
 class EnrollmentManager(models.Manager):
-    def for_student_dashboard(self):
+    def for_student_dashboard(self, user):
         # Optimasi query untuk dashboard student
         return self.select_related('course').prefetch_related('progress_set', 'progress_set__lesson')
 
